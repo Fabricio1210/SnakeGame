@@ -25,10 +25,10 @@ volatile unsigned int* d_pad_right = D_PAD_0_RIGHT;
 volatile unsigned int* switch_base = SWITCHES_0_BASE;
 
 // Variables del juego
-unsigned int snake[100];    // M醲imo 100 segmentos
+unsigned int snake[100];    // M谩ximo 100 segmentos
 unsigned int snake_length;  // Longitud de la serpiente
-unsigned int apple_pos;     // Posici髇 de la manzana
-unsigned int direction;     // Direcci髇 de movimiento
+unsigned int apple_pos;     // Posici贸n de la manzana
+unsigned int direction;     // Direcci贸n de movimiento
 
 // Reinicia el estado del juego
 void reset_game() {
@@ -78,7 +78,7 @@ void move_snake() {
         snake[i] = snake[i - 1];
     }
 
-    // Actualizar direcci髇
+    // Actualizar direcci贸n
     if (*d_pad_up) direction = UP;
     if (*d_pad_down) direction = DOWN;
     if (*d_pad_left) direction = LEFT;
@@ -97,56 +97,22 @@ int check_collision() {
     unsigned int head_row = head / WIDTH;
     unsigned int head_col = head % WIDTH;
 
-    // Colisi髇 con bordes laterales
+    // Colisi贸n con bordes laterales
     if ((head_col == 0 && direction == LEFT) || 
         (head_col == WIDTH - 2 && direction == RIGHT)) {
         return 1; // Toca los bordes izquierdo o derecho
     }
 
-    // Colisi髇 con bordes superior o inferior
+    // Colisi贸n con bordes superior o inferior
     if ((head_row == 0 && direction == UP) || 
         (head_row + 1 >= HEIGHT && direction == DOWN)) {
         return 1; // Toca los bordes superior o inferior
     }
 
-    // Colisi髇 con el cuerpo
+    // Colisi贸n con el cuerpo
     for (int i = 1; i < snake_length; i++) {
         if (head == snake[i]) return 1;
     }
     return 0;
 }
 
-// Verifica si la serpiente come una manzana
-void check_apple() {
-    // Coordenadas de la cabeza de la serpiente (2x2)
-    unsigned int head_x = snake[0] % WIDTH;
-    unsigned int head_y = snake[0] / WIDTH;
-
-    // Coordenadas de la manzana (2x2)
-    unsigned int apple_x = apple_pos % WIDTH;
-    unsigned int apple_y = apple_pos / WIDTH;
-
-    // Verificar superposici髇
-    if ((head_x < apple_x + 2 && head_x + 2 > apple_x) &&
-        (head_y < apple_y + 2 && head_y + 2 > apple_y)) {
-        snake_length++; // Incrementar tama駉
-        do {
-            apple_pos = rand() % (WIDTH * HEIGHT);
-        } while (apple_pos % WIDTH + 1 >= WIDTH || apple_pos + WIDTH >= WIDTH * HEIGHT);
-    }
-}
-
-// Ciclo principal del juego
-void main() {
-    reset_game();
-    while (1) {
-        if (*switch_base & 0x01) reset_game();
-
-        move_snake();
-        if (check_collision()) reset_game(); // Reiniciar al detectar colisi髇
-        check_apple();
-        draw_matrix();
-
-        for (volatile int i = 0; i < 200000; i++); // Delay
-    }
-}

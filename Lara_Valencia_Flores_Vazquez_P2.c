@@ -1,89 +1,4 @@
-[6:10 p.m., 21/11/2024] Alexis Iteso: #include "ripes_system.h"
-#include <stdlib.h> // Para rand()
-
-// Colores para los LEDs
-#define LED_ON  0xFF0000 // Rojo para la serpiente
-#define APPLE   0x00FF00 // Verde para la manzana
-#define EMPTY   0x000000 // Apagado
-
-// Dimensiones de la matriz LED
-#define WIDTH   LED_MATRIX_0_WIDTH
-#define HEIGHT  LED_MATRIX_0_HEIGHT
-
-// Direcciones
-#define UP      0
-#define DOWN    1
-#define LEFT    2
-#define RIGHT   3
-
-// Hardware
-volatile unsigned int* led_base = LED_MATRIX_0_BASE;
-volatile unsigned int* d_pad_up = D_PAD_0_UP;
-volatile unsigned int* d_pad_down = D_PAD_0_DOWN;
-volatile unsigned int* d_pad_left = D_PAD_0_LEFT;
-volatile unsigned int* d_pad_right = D_PAD_0_RIGHT;
-volatile unsigned int* switch_base = SWITCHES_0_BASE;
-
-// Variables del juego
-unsigned i…
-[6:11 p.m., 21/11/2024] Alexis Iteso: cambiar el color de la serpiente de verde a rojo
-[6:30 p.m., 21/11/2024] Alexis Iteso: #include "ripes_system.h"
-#include <stdlib.h> // Para rand()
-
-// Colores para los LEDs
-#define LED_ON  0xFF0000 // Rojo para la serpiente
-#define APPLE   0x00FF00 // Verde para la manzana
-#define EMPTY   0x000000 // Apagado
-
-// Dimensiones de la matriz LED
-#define WIDTH   LED_MATRIX_0_WIDTH
-#define HEIGHT  LED_MATRIX_0_HEIGHT
-
-// Direcciones
-#define UP      0
-#define DOWN    1
-#define LEFT    2
-#define RIGHT   3
-
-// Hardware
-volatile unsigned int* led_base = LED_MATRIX_0_BASE;
-volatile unsigned int* d_pad_up = D_PAD_0_UP;
-volatile unsigned int* d_pad_down = D_PAD_0_DOWN;
-volatile unsigned int* d_pad_left = D_PAD_0_LEFT;
-volatile unsigned int* d_pad_right = D_PAD_0_RIGHT;
-volatile unsigned int* switch_base = SWITCHES_0_BASE;
-
-// Variables del juego
-unsigned i…
-[6:31 p.m., 21/11/2024] Alexis Iteso: #include "ripes_system.h"
-#include <stdlib.h> // Para rand()
-
-// Colores para los LEDs
-#define LED_ON  0xFF0000 // Rojo para la serpiente
-#define APPLE   0x00FF00 // Verde para la manzana
-#define EMPTY   0x000000 // Apagado
-
-// Dimensiones de la matriz LED
-#define WIDTH   LED_MATRIX_0_WIDTH
-#define HEIGHT  LED_MATRIX_0_HEIGHT
-
-// Direcciones
-#define UP      0
-#define DOWN    1
-#define LEFT    2
-#define RIGHT   3
-
-// Hardware
-volatile unsigned int* led_base = LED_MATRIX_0_BASE;
-volatile unsigned int* d_pad_up = D_PAD_0_UP;
-volatile unsigned int* d_pad_down = D_PAD_0_DOWN;
-volatile unsigned int* d_pad_left = D_PAD_0_LEFT;
-volatile unsigned int* d_pad_right = D_PAD_0_RIGHT;
-volatile unsigned int* switch_base = SWITCHES_0_BASE;
-
-// Variables del juego
-unsigned i…
-[7:28 p.m., 21/11/2024] Alexis Iteso: #include "ripes_system.h"
+#include "ripes_system.h"
 #include <stdlib.h> // Para rand()
 
 // Colores para los LEDs
@@ -165,25 +80,6 @@ void draw_matrix() {
     }
 }
 
-// Mueve la serpiente
-void move_snake() {
-    for (int i = snake_length - 1; i > 0; i--) {
-        snake[i] = snake[i - 1];
-    }
-
-    // Actualizar dirección
-    if (*d_pad_up) direction = UP;
-    if (*d_pad_down) direction = DOWN;
-    if (*d_pad_left) direction = LEFT;
-    if (*d_pad_right) direction = RIGHT;
-
-    // Mover cabeza
-    if (direction == UP)    snake[0] -= WIDTH * 2; // Arriba
-    if (direction == DOWN)  snake[0] += WIDTH * 2; // Abajo
-    if (direction == LEFT)  snake[0] -= 2;         // Izquierda
-    if (direction == RIGHT) snake[0] += 2;         // Derecha
-}
-
 // Verifica colisiones
 int check_collision() {
     unsigned int head = snake[0];
@@ -205,6 +101,25 @@ int check_collision() {
         if (head == snake[i]) return 1;
     }
     return 0;
+}
+
+// Mueve la serpiente
+void move_snake() {
+    for (int i = snake_length - 1; i > 0; i--) {
+        snake[i] = snake[i - 1];
+    }
+
+    // Actualizar dirección
+    if (*d_pad_up) direction = UP;
+    if (*d_pad_down) direction = DOWN;
+    if (*d_pad_left) direction = LEFT;
+    if (*d_pad_right) direction = RIGHT;
+
+    // Mover cabeza
+    if (direction == UP)    snake[0] -= WIDTH * 2; // Arriba
+    if (direction == DOWN)  snake[0] += WIDTH * 2; // Abajo
+    if (direction == LEFT)  snake[0] -= 2;         // Izquierda
+    if (direction == RIGHT) snake[0] += 2;         // Derecha
 }
 
 // Verifica si la serpiente come una manzana
@@ -252,6 +167,6 @@ void main() {
         check_apple();
         draw_matrix();
 
-        for (volatile int i = 0; i < 5000; i++); // Delay reducido
+        for (volatile int i = 0; i < 500; i++); // Delay reducido
     }
 }
